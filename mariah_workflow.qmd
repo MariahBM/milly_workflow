@@ -1,0 +1,65 @@
+---
+title: "mariah_workflow"
+format: html
+editor: visual
+---
+
+## packages
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(plotly)
+```
+
+
+
+## data import
+```{r}
+claims <- read_csv("claims.csv")
+claims
+```
+
+## data cleaning
+```{r}
+claims_clean <- claims %>%
+ filter(format(LASTBILLEDDATE1, "%Y") >= "2015") %>%
+  select(PATIENTID,Id,SERVICEDATE, DIAGNOSIS1) %>%
+  distinct()
+
+```
+
+## data viz
+
+
+```{r}
+# Create the ggplot with  y-axis labels
+p <- ggplot(claims_clean, aes(x = as.factor(year(SERVICEDATE)))) +
+  geom_bar(fill = "#69b3a2", color = "#1f2d30") +  # Cool colors for bars
+  labs(
+    title = "Distinct Patients per Year",
+    x = "Year",
+    y = "Number of Distinct Patients"
+  ) +
+  scale_y_continuous(labels = scales::number_format(accuracy = 1)) +
+  theme_minimal(base_size = 15) +  # Larger base font size for readability
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),  # Centered bold title
+    axis.title = element_text(face = "bold"),               # Bold axis titles
+    panel.grid.major = element_line(color = "gray80", linetype = "dashed"),  # Dashed grid lines
+    panel.grid.minor = element_blank()  # Remove minor grid lines
+  )
+
+# Print the ggplot
+ggplotly()
+
+
+```
+
+
+## data analysis
+```{r}
+
+```
+
